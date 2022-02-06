@@ -7,14 +7,25 @@ let passwordRegEx=/((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%!]).{6,40})/;
 
 function setusername(){
     userName = $("#username").val();
+    $.ajax({
+        type: 'POST',
+        url: 'https://dev.stedi.me/twofactorlogin/'+ userName, 
+        data: JSON.stringify({userName, password}),
+        success: function(data) {
+           // window.location.href = "/timer.html#"+data;//add the token to the url
+        },
+        contentType: "application/text",
+        dataType: 'text'
+    });
+    // make prompting to send you the code ****
 }
 
 function setuserpassword(){
-    password = $("#password").val();
-    var valid=passwordRegEx.exec(password);
-    if (!valid){
-        alert('Must be 6 digits, upper, lower, number, and symbol');
-    }
+    password = $("#password").val();//#password changed
+    // var valid=passwordRegEx.exec(password);
+    // if (!valid){
+    //     alert('Must be 6 digits, upper, lower, number, and symbol');
+    // }
 }
 
 function setverifypassword(){
@@ -51,10 +62,12 @@ function userlogin(){
     setusername();
     $.ajax({
         type: 'POST',
-        url: '/login',
-        data: JSON.stringify({userName, password}),
+        url: 'https://dev.stedi.me/twofactorlogin', 
+        data: JSON.stringify({
+            "phoneNumber": userName,
+            "oneTimePassword": password}),
         success: function(data) {
-            window.location.href = "/timer.html#"+data;//add the token to the url
+        window.location.href = "/timer.html#"+ data;//add the token to the url
         },
         contentType: "application/text",
         dataType: 'text'
